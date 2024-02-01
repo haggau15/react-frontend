@@ -1,1 +1,1 @@
-export const placesURL = "";
+export const placesURL = "http://localhost:8080/api/places";

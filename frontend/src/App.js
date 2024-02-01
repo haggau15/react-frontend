@@ -1,27 +1,42 @@
-import logo from './logo.svg';
+import * as React from 'react';
+import {Component, useEffect, useState} from 'react';
 import './App.css';
-import {useState,useEffect} from 'react';
-import './api'
-import {placesURL} from "./api";
-function App() {
-  const [places,setPlaces]=useState();
+import './api.js'
+import {createRoot} from 'react-dom/client';
+import {placesURL} from "./api.js";
 
-  const getPlaces = async () =>{
-    try {
-      const response = await get(placesURL);
-      setPlaces(response.data);
-    } catch (err) {
-      console.log(err);
+
+export default function App (){
+  const [places, setPlaces] = useState();
+
+    function pulljson(){
+        fetch('http://localhost:8080/api/places',{
+            method: 'GET',
+            headers: {
+                Accept: "application/json, text/plain, */*",
+                "Content-Type": "application/json"
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+            })
+        return;
     }
-  }
-  useEffect(()=>{
-    getPlaces();
-  },[])
-  return (
-    <div className="App">
-
-    </div>
-  );
+    useEffect(() =>{
+    pulljson();
+    },[])
+    return (
+        <div className={"App"}>
+            lkm
+        </div>
+    )
 }
 
-export default App;
+
+const root = createRoot(document.getElementById('root'));
+root.render(
+    <App />
+);
+
+
