@@ -5,10 +5,9 @@ import './api.js'
 import {createRoot} from 'react-dom/client';
 import {placesURL} from "./api.js";
 
-
 export default function App (){
-  const [places, setPlaces] = useState();
-
+    const [places, setPlaces] = useState();
+    let displayData;
     function pulljson(){
         fetch('http://localhost:8080/api/places',{
             method: 'GET',
@@ -19,16 +18,21 @@ export default function App (){
         })
             .then(response => response.json())
             .then(data => {
+                displayData=data.map(function (place){
+                    return(<p key={place.id}> {place.name}  {place.score} {JSON.parse(place.reviews[0]).text} </p>
+                    )
+                })
                 console.log(data)
+                setPlaces(displayData);
             })
-        return;
     }
     useEffect(() =>{
     pulljson();
     },[])
     return (
         <div className={"App"}>
-            lkm
+            <>Places</>
+            {places}
         </div>
     )
 }
