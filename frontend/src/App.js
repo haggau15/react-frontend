@@ -8,10 +8,11 @@ import {json} from "react-router-dom";
 import data from "bootstrap/js/src/dom/data.js";
 
 export default function App (){
-    const [json, setJson] = useState();
-    const [places, setPlaces] = useState();
+    const [requestData, setRequestData]= useState("")
+    const [json, setJson] = useState(); //Contains the raw content from the database
+    const [places, setPlaces] = useState(); //Contains sorted and formatted data
     let displayData;
-    function pulljson(){
+    function getJson(){
         fetch('http://localhost:8080/api/places',{
             method: 'GET',
             headers: {
@@ -26,16 +27,14 @@ export default function App (){
                     return(<p key={place.id}> {place.name}  {place.score} {JSON.parse(place.reviews[0]).text} </p>
                     )
                 })
-                //console.log(data)
                 setPlaces(displayData);
             })
     }
     useEffect(() =>{
-    pulljson();
+        getJson();
     },[])
 
-    function getPlacesByLowestScore(url) {
-        console.log(JSON.stringify(json))
+    function sortPlaces(url) {
         fetch(url, {
             method: 'POST',
             headers: {
@@ -48,16 +47,39 @@ export default function App (){
                     return(<p key={place.id}>   {place.score} {JSON.parse(place.reviews[0]).text}
                             <br/>{place.name}</p>
                     )
-                }
-                )
+                })
                 setPlaces(displayData);
             })
+    }
+    const handleChange = (event) => {
+        setRequestData(event.target.value);
+    };
+
+    function handleClick() {
+        setRequestData("");
+        fetch('http://localhost:8080/api/request/publish?message='+requestData)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                // Optional: Do something with the response if needed
+            })
+            .catch(error => {
+                console.error('There was a problem with your fetch operation:', error);
+            });
     }
 
     return (
         <div className={"App"}>
-            <button onClick={() => getPlacesByLowestScore('http://127.0.0.1:5001/filter')}>Sort by lowest score</button>
+            <button onClick={() => sortPlaces('http://127.0.0.1:5001/filter/low')}>Sort by lowest score</button>
+            <button onClick={() => sortPlaces('http://127.0.0.1:5001/filter/high')}>Sort by highest score</button>
+            <button onClick={() => sortPlaces('http://127.0.0.1:5001/filter/comments/low\n')}>Sort by worst reviews</button>
+            <button onClick={() => sortPlaces('http://127.0.0.1:5001/filter/comments/high\n')}>Sort by best reviews</button>
+
+
             <br/>
+            <input type="text" value={requestData} onChange={handleChange}/>
+            <button onClick={handleClick}>Send</button>
             <>Places</>
             {places}
         </div>
