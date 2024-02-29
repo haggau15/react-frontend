@@ -77,7 +77,7 @@ export default function App (){
 
             <br/>
             <input type="text" value={requestData} onChange={handleChange}/>
-            <button onClick={handleClick}>Send</button>
+            <button onClick={handleClick}>Request more data</button> <br/>
             <>Places</>
             {places}
         </div>
