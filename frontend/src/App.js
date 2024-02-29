@@ -5,7 +5,6 @@ import './api.js'
 import {createRoot} from 'react-dom/client';
 import {placesURL} from "./api.js";
 import {json} from "react-router-dom";
-import data from "bootstrap/js/src/dom/data.js";
 
 export default function App (){
     const [requestData, setRequestData]= useState("")
@@ -24,7 +23,7 @@ export default function App (){
             .then(data => {
                 displayData=data.map(function (place){
                     setJson(data)
-                    return(<p key={place.id}> {place.name}  {place.score} {JSON.parse(place.reviews[0]).text} </p>
+                    return(<p key={place.id}> <h2>{place.name}</h2>  Score:{place.score} <br/> {JSON.parse(place.reviews[0]).text} </p>
                     )
                 })
                 setPlaces(displayData);
@@ -44,8 +43,7 @@ export default function App (){
         })  .then(response => response.json())
             .then(data => {
                 displayData=data.map(function (place){
-                    return(<p key={place.id}>   {place.score} {JSON.parse(place.reviews[0]).text}
-                            <br/>{place.name}</p>
+                    return(<p key={place.id}> <h2>{place.name}</h2>  Score:{place.score} <br/> {JSON.parse(place.reviews[0]).text}</p>
                     )
                 })
                 setPlaces(displayData);
